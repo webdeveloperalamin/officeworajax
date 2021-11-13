@@ -92,7 +92,6 @@ function lemonbook_shortcode_handler_function( $atts, $content = null ) {
 
     extract( shortcode_atts( [
         'per_page' => '8',
-        'catname'  => '',
     ], $atts ) );
 
     global $perpagevalue;
@@ -148,9 +147,7 @@ function lemonbook_shortcode_handler_function( $atts, $content = null ) {
         }
     }
     
-    $lemonbook_markup .= '<input type="hidden" name="term" value=""></ul>';
-
-    //var_dump($obj);
+    $lemonbook_markup .= '</ul>';
 
     /*$lemonbook_markup .= '<form id="lemonbook-shorting" class="lemonbook-shorting" action="#">
     <select name="lemonbook_cat_selection" id="lemonbook_cat_selection">
@@ -169,24 +166,17 @@ function lemonbook_shortcode_handler_function( $atts, $content = null ) {
 
     $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
-    if ( strpos( $catname, ',' ) !== false ) {
+    /*if ( strpos( $catname, ',' ) !== false ) {
         $catnamep = explode( ',', $catname );
     } else {
         $catnamep = $catname;
-    }
+    }*/
 
     $lemonbook_array = new WP_Query(
         [
             'posts_per_page' => $per_page,
             'post_type'      => 'lemonbook',
             'paged'          => $paged,
-            /*'tax_query'      => [
-        [
-        'taxonomy' => 'book-category',
-        'field'    => 'slug',
-        'terms'    => $catnamep,
-        ],
-        ],*/
         ]
     );
     while ( $lemonbook_array->have_posts() ): $lemonbook_array->the_post();
@@ -261,7 +251,9 @@ wp_localize_script( 'lemonbook_loadmore', 'lemonbook_loadmore_params', array(
 function lemonbook_loadmore_ajax_handler() {
 
     global $wp_query;
-
+	
+	
+	
     $args = json_decode( stripslashes( $_POST['query'] ), true );
     $args['paged'] = $_POST['page'] + 1; // we need next page to be loaded
     $args['post_status'] = 'publish';
@@ -316,22 +308,11 @@ function lemonbook_loadmore_ajax_handler() {
 function lemonbook_filter_scripts() {
 
     global $wp_query;
-
-    $catSlug = $_POST['taxnam'];
-
-    echo strtoupper($catSlug);
     
-   wp_enqueue_script( 'lemonbook_filter', plugin_dir_url( __FILE__ ) . 'assets/js/filter.js', array('jquery'), '1.0.0', true );
+   //wp_enqueue_script( 'lemonbook_filter', plugin_dir_url( __FILE__ ) . 'assets/js/filter.js', array('jquery'), '1.0.0', true );
     
     $lemonbookfilterpost = new WP_Query( [        
         'post_type' => 'lemonbook',
-        'tax_query' => [
-            [
-                'taxonomy' => 'book-category',
-                'field'    => 'slug',
-                'terms'    => ['bangla'], 
-            ],
-        ],
     ]);
     
     wp_localize_script( 'lemonbook_filter', 'lemonbook_filter_params', array(
@@ -356,17 +337,23 @@ add_action( 'wp_ajax_nopriv_filter', 'lemonbook_categories_filter_ajax_handler' 
 function lemonbook_categories_filter_ajax_handler() {
 
     global $wp_query;
+	
+	$catSlug = $_POST['taxnam'];
+
+    //echo strtoupper($catSlug);
 
     $args = json_decode( stripslashes( $_POST['query'] ), true );
     //$args['paged'] = $_POST['page'] + 1; // we need next page to be loaded
     $args['post_status'] = 'publish';
-    /*$args['tax_query'] = [
-        [
-            'taxonomy' => 'book-category',
-            'field'    => 'slug',
-            'terms'    => ['bangla'], 
-        ],
-    ];*/
+	if( $catSlug != '*' ){
+		$args['tax_query'] = [
+			[
+				'taxonomy' => 'book-category',
+				'field'    => 'slug',
+				'terms'    => [$catSlug], 
+			],
+		];
+	}
     //$args['category_name'] = 'german';
     //$args['post_type'] = 'lemonbook';
 
@@ -396,32 +383,13 @@ function lemonbook_categories_filter_ajax_handler() {
                 $lemonbook_assigned_category = '';
             }
 
-            //echo $lemonbook_assigned_category . ', ' ;
-
-
-            the_title();
-
-            echo '<br>';
-
-        /*
-            $lemonbook_category = get_the_terms( get_the_ID(), 'book-category' );
-            if ( $lemonbook_category && !is_wp_error( $lemonbook_category ) ) {
-                $lemonbook_category_list = [];
-                foreach ( $lemonbook_category as $single_book_category ) {
-                    $lemonbook_category_list[] = $single_book_category->slug;
-                }
-                $lemonbook_assigned_category = join( ' ', $lemonbook_category_list );
-            } else {
-                $lemonbook_assigned_category = '';
-            }
-
             ?>
-                                                                                                                                                                                            <div class="single-book-list <?php echo $lemonbook_assigned_category; ?>">
-                <?php echo $args['category_name']; ?>
+            <div class="single-book-list <?php echo $lemonbook_assigned_category; ?>">                
                 <div class="single-book-box">
                     <div class="book-box-img">
                         <img class="book-img" src="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'full' ) ); ?>"/>
                     </div>
+
                     <div class="book-box-content">
                         <div class="book-box-content-inner">
                             <h3><?php echo esc_html( get_the_title() ); ?></h3>
@@ -431,10 +399,7 @@ function lemonbook_categories_filter_ajax_handler() {
                     </div>
                 </div>
             </div>
-
-			<?php
-
-        */
+            <?php
 
         endwhile;
 
