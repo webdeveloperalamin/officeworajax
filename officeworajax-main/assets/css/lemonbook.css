@@ -1,0 +1,132 @@
+.book-wrapper {
+	position: relative;
+}
+.lemonbook-shorting {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	display: block;
+	margin-bottom: 30px;
+}
+.lemonbook-shorting li {
+	display: inline-block;
+	padding: 5px 10px;
+	text-transform: lowercase;
+	font-size: 20px;
+	cursor: pointer;
+	transition: all ease-in-out .3s;
+}
+
+.lemonbook-shorting li:hover, .lemonbook-shorting .active {
+	color: #f23333;
+}
+.book-list{
+    overflow: hidden;
+}
+.single-book-list {
+	width: 25%;
+	padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    float: left;
+}
+
+.single-book-box {
+	position: relative;
+}
+.book-box-bg {
+	width: 100%;
+	height: 250px;
+	background-size: cover;
+	background-position: center center;
+}
+.book-box-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.book-box-content {
+	background-color: rgba(242,51,51,0.8);
+	padding: 15px 20px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	text-align: center;
+    color: #fff;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: all ease-in-out .3s;
+}
+.single-book-list:hover .book-box-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.book-box-content-inner {
+	transform: translate(-50%,-50%);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	max-width: 270px;
+	width: 100%;
+	padding: 10px;
+}
+.book-box-content h3 {
+	color: #fff;
+	font-weight: 600;
+	font-size: 22px;
+	margin: 0 0 10px;
+}
+.readmore-btn {
+	color: #fff;
+	font-weight: 600;
+	font-size: 18px;
+}
+.loadmore-btn-wrapp {
+	text-align: center;
+	overflow: hidden;
+	margin-top: 30px;
+}
+.loadMore {
+	background-color: #f23333;
+	font-weight: 600;
+	padding: 12px 30px;
+	max-width: 150px;
+	line-height: 1.2;
+	color: #fff;
+	font-size: 16px;
+	margin: 30px auto 0;
+	cursor: pointer;
+	clear: both;
+	text-align: center;
+}
+
+
+
+
+@media (min-width: 601px) and (max-width: 991px) {
+    .single-book-list{
+        width: 50%;
+    }
+    
+}
+
+@media (max-width: 600px) {
+    .single-book-list{
+        width: 100%;
+    }
+	.book-box-img {
+		max-width: 300px;
+		margin: 0 auto;
+	}
+}
+
+
+
+
+
